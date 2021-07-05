@@ -1,0 +1,28 @@
+
+chunk {main} main.js, main.js.map (main) 249 kB [initial] [rendered]
+chunk {polyfills} polyfills.js, polyfills.js.map (polyfills) 303 kB [initial] [rendered]
+chunk {runtime} runtime.js, runtime.js.map (runtime) 6.15 kB [entry] [rendered]
+chunk {scripts} scripts.js, scripts.js.map (scripts) 146 kB [entry] [rendered]
+chunk {styles} styles.js, styles.js.map (styles) 1.73 MB [initial] [rendered]
+chunk {vendor} vendor.js, vendor.js.map (vendor) 8.1 MB [initial] [rendered]
+Date: 2021-03-30T22:32:23.534Z - Hash: ddb0c0dbe49f5b9574fb - Time: 74983ms
+** Angular Live Development Server is listening on 192.168.2.122:4300, open your browser on http://192.168.2.122:4300/ **
+: Compiled successfully.
+
+Date: 2021-03-30T22:41:01.638Z - Hash: a6f99682ba255995bfdd
+5 unchanged chunks
+chunk {main} main.js, main.js.map (main) 249 kB [initial] [rendered]
+Time: 3312ms
+: Compiled successfully.
+
+Date: 2021-03-30T22:41:44.912Z - Hash: 4e6c0387d8e395cf9117
+5 unchanged chunks
+chunk {main} main.js, main.js.map (main) 249 kB [initial] [rendered]
+Time: 1886ms
+: Compiled successfully.
+
+Date: 2021-06-25T09:38:09.315Z - Hash: 4e6c0387d8e395cf9117
+6 unchanged chunks
+
+Time: 1130ms
+: Compiled successfully.

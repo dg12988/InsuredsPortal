@@ -1,0 +1,49 @@
+
+
+<div style=" width: 100%; position: relative;" [@fadeInOut]>
+<mat-card *ngIf="!authPassed" style="width:500px; background-color: #f7f7f7; position: fixed;top: 50%; left: 50%; transform: translate(-50%, -50%)">
+    <div style="padding: 1%; padding-top: 10%;">
+      <img src="../insured/assets/Claimswire_Logo1.png" alt="Insured Connect" width="346px" height="48px" style="margin: 0 auto; display: block;">
+      <div style="color:darkslategrey;  text-align: center; font-family: 'Roboto';font-size: 22px; font-weight: 400; margin-bottom: 5%; margin-top: 1%;">Insured Connect | Claims Portal</div>
+    </div>
+    
+    <div class="loginForm" style="display: block; margin: 2%;">
+       
+        <mat-form-field style="margin: 0 auto; display: block; width: 350px;">
+            <mat-label>Username</mat-label>
+            <input matInput #userNameField type="text" name="username"  placeholder="Type your username" [(ngModel)]="username">
+            <button mat-button matPrefix mat-icon-button style="pointer-events: none; padding-right: 5px;" tabindex="-1">
+                <mat-icon style="color: #174d68">person_outline</mat-icon>
+              </button>
+        </mat-form-field>
+        
+        <mat-form-field style="margin: 0 auto; display: block; width: 350px; padding-bottom: 5%;">
+              
+            <mat-label >Password</mat-label>
+          
+                <input matInput  type="password" name="password"  placeholder="Type your password" [(ngModel)]="password" >
+                 
+                <button mat-button matPrefix mat-icon-button style="pointer-events: none; padding-right: 5px;" tabindex="-1">
+                    <mat-icon  style="color: #174d68">lock_outline</mat-icon>
+                  </button>
+              
+        </mat-form-field>
+
+        <div style="position: relative; margin-bottom: 5%;">
+            <mat-checkbox (change)="rememberMe($event);" style="margin: auto;color: grey; font-size: 14px; font-weight: 200;  position: absolute;top: 50%;left: 50%; font-family: Roboto;
+            transform: translate(-50%, -50%);">Remember Me</mat-checkbox>
+        </div>
+        
+
+        <div style="display: block; padding-bottom: 5%;">
+            <button mat-stroked-button type="submit" class ="loginButton"value="Login" (click)="LoginUser()" style="width:200px; height:50px; font-size: 22px; font-family: 'Roboto'; font-weight: 600; margin: 0 auto; display: block">Log In</button>
+        </div>
+        <div style="position: relative; margin-bottom: 5%;">
+            <a href="https://web.simsol.com/support/" style="margin: auto;color: grey; font-family: 'Segoe UI';font-size: 14px; font-weight: 600;text-decoration: underline;  position: absolute;top: 50%;left: 50%;
+            transform: translate(-50%, -50%);">Get Help?</a>
+        </div>
+    </div>
+</mat-card>
+</div>
+
+<adjmap-app *ngIf="authPassed" [childParam]="parentParam" [@fadeInOut]></adjmap-app> 

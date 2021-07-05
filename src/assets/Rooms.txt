@@ -1,0 +1,84 @@
+Atrium
+Attic
+Bar Area
+Basement
+Bathroom
+Bedroom 1
+Bedroom 2
+Bedroom 3
+Bedroom 4
+Bedroom 5
+Bedroom 6
+Board Room
+Breakfast Nook
+Breezeway
+Carport
+Closet
+Conference Room
+Crawlspace
+Deck
+Den
+Detached Garage
+Dining Room
+Dressing Area
+Electrical
+Electrical Room
+Entry
+Equipment Room
+Exercise Room
+Exterior
+Exterior
+Family Room
+Fees
+Fencing
+Foyer
+Garage
+General
+Guest Room
+H.V.A.C
+Half Bathroom
+Hall
+Hall Closet
+Kitchen
+Lanai
+Library
+Living Room
+Lobby
+Loft
+Lunch Room
+Maid's Quarters
+Master Bathroom
+Master Bedroom
+Mechanical Room
+Media Room
+Men's Restroom
+Middle Bedroom
+Miscellaneous
+MIL Suite
+Mud Room
+Music Room
+Office
+Pantry
+Patio Enclosure
+Play Room
+Plumbing
+Pool Area
+Porch
+Sauna
+Screen Room
+Shed
+Shower Area
+Shower Stall
+Solarium
+Stairs
+Stairwell
+Storage Room
+Study
+Sun Room
+Utility Room
+Vanity Area
+Walk-in Closet
+Water Closet
+Women's Restroom
+Workout Room
+Workshop

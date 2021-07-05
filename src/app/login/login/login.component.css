@@ -1,0 +1,23 @@
+
+.loginButton{
+    background-color: #5587a4;
+    color: white;
+    transition: 0.3s background-color ease-in-out;
+    
+    border-radius: 15px;
+  }
+  .loginButton:hover{
+    background-color:limegreen;
+    
+  }
+  ::ng-deep.mat-form-field.mat-focused .mat-form-field-ripple{
+    background-color:  #5587a4;
+}
+::ng-deep.mat-form-field-flex{
+  background-color:  white;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  padding: 1%;
+  font-family: 'Segoe UI';
+}
+

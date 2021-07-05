@@ -1,0 +1,971 @@
+<div id="overall" (mousemove)="idleTimeout($event)">
+  <app-login *ngIf="logOutRequested" [@fadeInOut]></app-login>
+
+  <ng-chat #ngChatInstance [adapter]="adapter" [userId]="userId" [hideFriendsList]="true" (change)="messagesRead()"
+    (click)="messagesRead()"></ng-chat>
+  <div style="margin-left: 10.25%; margin-bottom: -15px; padding-top: .5%;">
+
+    <button mat-stroked-button type="submit" class="nextStepButton"
+      style="float:right!important; font-size: .6vw; margin-right: 12%;" value="Logout"
+      (click)="logOut()">LOGOUT</button>
+
+    <div style=" margin-top: 1vw; margin-bottom: .5vw;">
+      <img src="../insured/assets/Claimswire_Logo1.png" alt="Insured Connect" style="width: 13vw; height: 1.75vw;">
+      <div style="color:darkslategrey;  font-family: 'Roboto';font-size: 1vw; font-weight: 800; margin-left: .2vw;">
+        Insured Connect | Claims Portal</div>
+    </div>
+  </div>
+
+
+
+
+  <div class="contentsPreviewContainer" *ngIf="isLoading" [@fadeInOut]>
+
+    <mat-card class="spinnerContainer" #spinner>
+
+      <div style="position: relative;">
+        <div style="position: fixed;top: 50%; left: 50%; transform: translate(-50%, -50%);">
+          <h2 style="text-align: center;">Loading</h2>
+          <h3 style="text-align: center; margin-bottom: 10%;">Please Wait</h3>
+          <img src="../insured/assets/Claimswire_Logo1.png" alt="Claimswire Insured Portal"
+            style="display: block; margin: 0 auto; margin-bottom: .5%;" height="48px" width="346px;">
+          <img src="../insured/assets/stormSlow.gif" alt="Storm Spinner" style="display: block; margin: 0 auto; "
+            height="128px" width="128px">
+
+        </div>
+      </div>
+
+    </mat-card>
+  </div>
+
+
+
+
+  <!-- <div class="subNav" *ngIf="!logOutRequested">
+    <div class="input" style="padding-bottom: .5%;">
+      <button mat-stroked-button type="submit" class ="loginButton"  value="Logout" style="width:175px; height:35px; font-family: 'Montserrat';font-size: 15px; display: block; color: midnightblue;" (click)="logOut()">LOGOUT</button>
+      
+    </div>  
+  
+</div>  -->
+
+  <div class="wrapper" *ngIf="!logOutRequested" [@fadeInOut]>
+    <div class="mainTabsWrapper"
+      style="background-color: #236188; width: 99%; margin-left: .5%;padding-bottom: .2%; margin-top: .5%;display: flex;">
+
+      <div class="mainTabs" (click)="showDash();" label="Dashboard">
+        Dashboard
+      </div>
+      <div class="mainTabs" (click)="showMessage();" label="Messages">
+        Messages
+      </div>
+      <div *ngIf="showClaimsProcess" [@fadeInOut] class="mainTabWizard" (click)="showWizard();"
+        style="border-radius: 25px;" label="Start Claims Process">
+        Start Claims Process
+      </div>
+
+    </div>
+    <mat-card id="contentWrap" style="overflow-x:auto; background-color: #eaf0f2;">
+
+
+      <div *ngIf="isDashOpen" [@fadeInOut]>
+        <div
+          style="background-color: #eaf0f2; padding-top: 20px;padding-bottom: 20px; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;">
+          <div style="min-height: 250px!important;">
+
+
+            <div class="flexCenter">
+              <mat-card style="width: 53%;padding: 1%;">
+                <div>
+                  <div
+                    style=" text-align: left; font-family: 'Poppins', sans-serif; font-weight: 600;font-size: 1.1vw; padding-bottom: 1%; color: #5e5e5e!important;"
+                    *ngIf="adjDataArray && adjDataArray[0][0]"> Hello, {{adjDataArray[0][0].insuredFirstName}}
+                    {{adjDataArray[0][0].insuredLastName}}!</div>
+                  <div style="color: #6d6d6d; text-align: center; font-size: .6vw; width: 80%; margin-left: 10%;">
+                    Welcome to your Insured Portal! Here you can find information about your claim, adjuster, and
+                    policy.
+                    You'll be<br>able to create an estimate for your personal property damages and send them directly to
+                    your adjuster through<br> the cloud.
+                    Create a remote session with your adjuster where they can inspect your property without
+                    the<br>hassle of a physical inspection!</div>
+                </div>
+              </mat-card>
+
+              <mat-card style="width: 17%;  margin-left: 2%;  cursor: pointer;" class="underLine"
+                (click)="showMessage();">
+                <div class="sectionHeader" style=" padding: 0;">Unread Messages</div>
+                <div class="sectionHeader" style="font-size: 3.5vw!important; text-align: center; padding: 0;">
+                  {{totalUnreadMessages}}</div>
+              </mat-card>
+            </div>
+
+            <div style="display: flex; justify-content: center;">
+              <mat-card style="margin: 1%; width: 35%;">
+                <div class="sectionHeader">Your Policy Information</div>
+                <hr class="hRule">
+                <table #claimTable id="claimTable" class="frontTables"
+                  style=" font-size: .6vw; display: flex; justify-content: center; padding: 2%;">
+                  <thead>
+                    <tr>
+                      <th style="padding-right: 25px;">Policy Number: </th>
+                      <td value="this.innerText" style=" margin-left: 2%; color: #6d6d6d;">
+                        {{adjDataArray[0][0].policyNumber}}</td>
+
+                    </tr>
+                    <tr>
+
+                      <th style="padding-right: 25px;">Policy Type: </th>
+                      <td style=" margin-left: 2%; color: #6d6d6d;">{{adjDataArray[0][0].policyType}}</td>
+                    </tr>
+                    <tr>
+
+                      <th style="padding-right: 25px;">Policy Term: </th>
+                      <td style="margin-left: 2%; color: #6d6d6d;">{{adjDataArray[0][0].policyEffDate | date}} -
+                        {{adjDataArray[0][0].policyExpDate | date}}</td>
+
+                    </tr>
+                    <br>
+
+                    <tr>
+
+                      <th style="padding-right: 25px;">Claim Number: </th>
+                      <td style="color: #6d6d6d;">{{adjDataArray[0][0].claimNumber}}</td>
+                    <tr>
+                      <th style="padding-right: 25px;">Date of Loss: </th>
+                      <td style="margin-left: 2%; color: #6d6d6d;" value="this.innerText">
+                        {{adjDataArray[0][0].dateofLoss | date}}</td>
+                    </tr>
+                    <tr>
+                      <th style=" padding-right: 25px;">Loss Address: </th>
+                      <td style="margin-left: 2%; color: #6d6d6d;">{{adjDataArray[0][0].lossAddress1}}
+                        {{adjDataArray[0][0].lossAddress2}}</td>
+                    </tr>
+                    <tr>
+
+                      <th style="padding-right: 25px;">City/State/Zip: </th>
+                      <td style="margin-left: 2%; color: #6d6d6d;">{{adjDataArray[0][0].lossCity}},
+                        {{adjDataArray[0][0].lossState}} {{adjDataArray[0][0].lossZipcode}}</td>
+                    </tr>
+
+                  </thead>
+                  <tbody>
+
+
+
+                  </tbody>
+                </table>
+              </mat-card>
+
+
+              <mat-card style="margin: 1%; width: 35%; ">
+                <div class="sectionHeader">Your Assigned Claims Adjuster</div>
+                <hr class="hRule">
+
+                <div style="display: flex; justify-content: center; padding: 2%;">
+                  <img src="../insured/assets/danny.png" class="circleImg"
+                    style="width: 7vw; height: 7vw; margin-right: 5%;">
+
+                  <table #claimTable id="claimTable" class="frontTables"
+                    style=" font-size: .6vw; display: flex; justify-content: center; margin-top: 2.5%">
+                    <thead>
+                      <tr>
+                        <td class="noHover" style=" color: #5e5e5e; font-size: 1.3vw; font-weight: 600;">{{adjName[1]}}
+                          {{adjName[0]}}</td>
+                      </tr>
+                      <tr>
+                        <td class="noHover" style="  font-size: .6vw; color: #6d6d6d; line-height: .5em; ">Licensed
+                          Claims Adjuster</td>
+                      </tr>
+
+                      <br>
+
+                      <tr>
+                        <th style="font-size: .6vw;">Adjuster's Phone: </th>
+                        <td style="font-size: .6vw; color: #6d6d6d;">
+                          <div *ngIf="adjDataArray[0][0].adjusterPhone;else other_content" [@fadeInOut]>
+                            {{adjDataArray[0][0].adjusterPhone}}
+                          </div>
+
+                          <ng-template #other_content>{{adjDataArray[1][0].companyPhone}}</ng-template>
+                        </td>
+
+
+                      </tr>
+                      <tr>
+
+                        <th style="font-size: .6vw;">Adjuster's Email: </th>
+
+                        <td style="font-size: .6vw; color: #6d6d6d;">
+                          <div *ngIf="adjDataArray[0][0].adjusterEmail;else other_content2" [@fadeInOut]>
+                            {{adjDataArray[0][0].adjusterEmail}}
+                          </div>
+
+                          <ng-template #other_content2>{{adjDataArray[1][0].companyEmail}}</ng-template>
+                        </td>
+                      </tr>
+
+                    </thead>
+                    <tbody>
+
+
+
+                    </tbody>
+                  </table>
+
+                </div>
+              </mat-card>
+
+            </div>
+
+            <mat-card style="display: flex; justify-content: center; width: 72%; margin-left: 14%;">
+
+
+              <div style="padding-right: 5%; width: 80%;">
+                <div class="sectionHeader">Policy Documents for General Property</div>
+                <hr class="hRule">
+                <div style="font-size: .6vw; width: 50%; margin-left: 5%; color: #6d6d6d; padding: 2%;">
+                  Download and read these PDF documents to learn more about the claims process.
+                  If you have further questions about your claim or the insurance claims process, please contact your
+                  assigned adjuster.
+                </div>
+                <div
+                  style="color:blue; text-align: center; font-size: .5vw; position: absolute; bottom: 0;left: 20%; padding:1%;">
+                  It is required that you read the <a
+                    href="https://www.fema.gov/sites/default/files/2020-05/FINAL_ClaimsHandbook_10252017.pdf"
+                    target="_blank">National Flood Insurance Claims Handbook</a>
+                </div>
+
+              </div>
+
+              <div style="display: flex; justify-content: center;">
+
+                <a href='https://www.fema.gov/sites/default/files/2020-05/F-123_GeneralProperty_SFIP_102015.pdf' a
+                  target="_blank" class="underLine" style="height: 9.1vw; margin-right: 3%;"><img
+                    src="../insured/assets/genProp.png"
+                    style="  height: 9vw; border: 1px solid steelblue; background: white;"></a>
+
+
+                <a href='https://www.fema.gov/sites/default/files/2020-05/FINAL_ClaimsHandbook_10252017.pdf' a
+                  target="_blank" class="underLine" style="height: 9.1vw;"><img src="../insured/assets/handbook.png"
+                    style=" height: 9vw;"></a>
+
+
+
+              </div>
+
+
+            </mat-card>
+
+
+
+
+
+
+          </div>
+
+
+
+
+
+        </div>
+      </div>
+
+      <div *ngIf="isMessageOpen" [@fadeInOut]>
+        <div
+          style="background-color: #eaf0f2; padding-top: 20px;padding-bottom: 20px; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;">
+          <div style="min-height: 870px!important;">
+
+
+            <div class="flexCenter">
+              <div style="width: 20%;min-height: 800px; border-right: 2px solid #bac0c0; margin-top: 1%;">
+                <div style="margin-left: 20%; margin-top: 5%; ">
+                  <button class="composeButton">Compose</button>
+                  <div style="width: 40%;margin-left: 5%; margin-top: 10%;">
+                    <div class="messageDrawer">
+                      Inbox
+                    </div>
+                    <div class="messageDrawer">
+                      Sent
+                    </div>
+                    <div class="messageDrawer">
+                      Drafts
+                    </div>
+                    <div class="messageDrawer">
+                      Trash
+                    </div>
+                    <div class="messageDrawer">
+                      +New Folder
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style="width: 80%">
+                <div style="margin-left: 10%; font-size: 1vw; font-weight: 600; color: #7e8181;">Inbox</div>
+                <mat-card style="width: 80%; min-height: 800px;margin-left: 10%;">
+                  <table style="width: 100%;" id="messageTable" class="contentsTable">
+                    <thead style="font-size: .6vw; color:#bac0c0; background-color: white!important; padding: 2%;">
+                      <tr style="background-color: white!important;">
+                        <th>
+                          Subject
+                        </th>
+                        <th style="text-align: center;">
+                          From
+                        </th>
+                        <th style="text-align: center;">
+                          Date
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody style="font-size: .7vw; color: grey;">
+                      <tr>
+                        <td>
+                          Test
+                        </td>
+                        <td style="text-align: center;">
+                          Test
+                        </td>
+                        <td style="text-align: center;">
+                          Test
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Test
+                        </td>
+                        <td style="text-align: center;">
+                          Test
+                        </td>
+                        <td style="text-align: center;">
+                          Test
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Test
+                        </td>
+                        <td style="text-align: center;">
+                          Test
+                        </td>
+                        <td style="text-align: center;">
+                          Test
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </mat-card>
+              </div>
+            </div>
+
+
+
+          </div>
+
+
+
+
+
+        </div>
+      </div>
+
+      <mat-tab-group *ngIf="isWizardOpen" class="tabGroup" mat-align-tabs="center" [(selectedIndex)]="activeTab"
+        [@fadeInOut]>
+
+
+        <mat-tab #tab0 label="Read Claim Documents">
+          <br>
+          <div style="background-color:#eaf0f2;">
+            <mat-card style="background-color: #ffffff; width: 80%; margin-left: 10%; ">
+              <div class="sectionHeader">Step 1: Read your Claim Documents</div>
+              <div style="display: flex; justify-content: center;">
+                <ul style="font-size: 1vw;">
+                  <li style="text-decoration: underline; ">
+                    <a href="https://www.fema.gov/sites/default/files/2020-05/FINAL_ClaimsHandbook_10252017.pdf"
+                      target="_blank">National Flood Insurance Program (NFIP) Claims Handbook</a>
+                  </li>
+                  <div style="font-size: .6vw; text-decoration: none!important;">* It is required that you read the
+                    National Flood Insurance Claims Handbook</div>
+                  <br>
+                  <li style="text-decoration: underline;">
+                    <a href="https://www.fema.gov/sites/default/files/2020-05/F-123_GeneralProperty_SFIP_102015.pdf"
+                      target="_blank">National Flood Insurance Program (NFIP) General Property</a>
+                  </li>
+                </ul>
+
+
+              </div>
+
+            </mat-card>
+            <div style="display: flex; justify-content: center; padding: 1.5%; padding-bottom: 2%;">
+              <button class="nextStepButton" (click)="nextTab()">Next Step</button>
+            </div>
+          </div>
+        </mat-tab>
+
+        <mat-tab #tab2 label="Complete Virtual Inspection">
+          <br>
+          <div style="background-color:#eaf0f2; overflow: hidden;">
+            <mat-card style="background-color: #ffffff; width: 80%; margin-left: 10%; position: relative;">
+
+              <div
+                style="background-color: #ffffff; padding-top: 20px; padding-bottom: 20px; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; ">
+
+
+                <div class="sectionHeader">Step 2: Complete a Virtual Property Inspection</div>
+                <div style=" display: flex; justify-content: center; margin-lefT: 1%;">
+                  <div style="position: relative; margin-top: 1%;">
+
+
+
+                    <div>
+                      <div style="display:block; margin-top: 20px;">
+
+                        <img src="../insured/assets/phoneImg.png" style="width:50vw;margin: 0 auto;">
+                      </div>
+
+                      <div style="display:flex; justify-content: center; ">
+
+                        <div
+                          style="font-family: 'Roboto'; font-weight: 500; padding: 5px; color: #6d6d6d; font-size: .7vw;text-align: center; ">
+                          <div style="margin-top: 25px; font-size: .7vw; color: #6d6d6d;">
+                            Using The Insured Portal, you are able to complete an inspection of your home,<br>with your
+                            Adjuster, right from your phone!
+                          </div>
+                          <br>
+                          <br>
+                          <div>
+                            Click, or press, the button below to open the PhotoID app to get started.
+                          </div>
+
+
+                        </div>
+
+
+
+                      </div>
+
+                      <div style="display: flex; justify-content: center; padding: 1%;">
+                        <div>
+                          <button (click)="goToLink(VIinspectorLink)" class="animButton"
+                            style="background: none; border: none;">
+                            <div><img src="../insured/assets/photoidlogo.png" style="height: 3vw; width: 3vw; "></div>
+                          </button>
+                        </div>
+                      </div>
+
+
+
+
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+
+              </div>
+              <div style="background: white; position: absolute; bottom: 0; right: 0; padding: .5%;">
+
+                <img src="../insured/assets/uscopelogo.png" style="height: 3.5vw; width: 3.5vw; margin-left: 30%;">
+                <div style="font-size: .5vw; font-family: 'Roboto'; font-weight: 300; background: white;">Powered by<a
+                    href="https://photoidapp.net/" target="_blank"> USCOPE Technologies</a></div>
+              </div>
+
+            </mat-card>
+            <div style="display: flex; justify-content: center; padding: 1.5%; padding-bottom: 2%;">
+              <button class="nextStepButton" (click)="nextTab()">Next Step</button>
+            </div>
+          </div>
+        </mat-tab>
+
+
+        <mat-tab #tab1 label="Personal Property Entry">
+          <br>
+          <mat-card style="width: 98%; margin-left: 1%;">
+            <div class="sectionHeader">Step 3: Enter Personal Property Damage</div>
+            <div style="color: #6d6d6d; font-size: .7vw; width: 80%; margin-left: 10%;">Enter your Personal Property
+              (Contents) damage below. Click the Add Row button to add any<br>number of rows up to 100. You work will be
+              automatically saved, but make sure to click the save button when you are done just in case.</div>
+
+            <!-- <div [style.background]="contentsBgColor"  style="background-color:#fafaf9; padding: 25px; border-bottom-left-radius: 25px; border-bottom-right-radius: 25px;">
+             
+              
+               <img src="../insured/assets/pencilIcon.gif" [hidden]="contentsSubmitted" style="height: 300px; width: 400px; margin: 0 auto; display: block;">
+              <img src="../insured/assets/lockStar.gif" [hidden]="!contentsSubmitted" style="height: 300px; width: 400px; margin: 0 auto; display: block;">
+
+              <h1 [hidden]="contentsSubmitted" style="text-align: center; margin-top: -50px;  font-family: 'Montserrat'; color:#6d6d6d;  text-align: center; font-weight: 200; ">Personal Property</h1>
+              <h1 [hidden]="!contentsSubmitted" style="text-align: center; margin-top: -50px;  font-family: 'Montserrat'; color:#6d6d6d;  text-align: center; font-weight: 200; ">Personal Property Completed</h1>
+
+            <h5 [hidden]="contentsSubmitted" id="bannerInfo" style="color: slategrey; font-family: 'Montserrat'; font-weight: 100; font-size: 16px; padding: 1%; margin-top: -.5%; width: 50%; text-align: center; margin-left: 25%;">Enter your Personal Property (Contents) damage information below. <br>Click the Add Row button to add any number of rows up to 100. <br>Make sure to click Save, so that you do not lose your work.</h5>
+            <h5 [hidden]="!contentsSubmitted" id="bannerInfo" style="color: slategrey; font-family: 'Montserrat'; font-weight: 100; font-size: 16px; padding: 1%; margin-top: -.5%; width: 50%; text-align: center; margin-left: 25%;">Congratulations, You've completed the Contents Section <br> If you need to edit this section after you have submitted<br> you'll need to contact your Adjuster directly</h5>    
+          </div >  -->
+
+            <!-- Load Contents Button, Disabled -->
+            <!-- <label class="custom-file-upload"> -->
+
+            <!-- <input mat-raised-button #load name="contentsFile" class="addRowButton" (change)="loadXLSX($event)" style="margin: 1%;" type="file" accept=".xlsx"/><div class="loadButtonText">Load File</div> -->
+
+            <!-- </label>  -->
+            <div [hidden]="contentsSubmitted">
+
+
+              <button (click)="addRow()"
+                style="padding: .5%; height: 100px;background: none; border: none; text-align: center; font-family: 'Montserrat'; font-weight: 800;">
+                <mat-icon class="box bounce-7" style="font-size: 25px;  color:midnightblue;">note_add</mat-icon><br>Add
+                Row
+              </button>
+              <input id="fileInput" #addRowAmount type="number" min="1" max="15" value="1"
+                style="height: 45px; width: 55px; font-size: 18px; text-align: center; color:#005288; font-family: 'Montserrat'; background:#DBFFFF; border: none; border-radius: 5px; padding-left: .5%;">
+              <button (click)="deleteRow()"
+                style="padding: .5%; height: 100px;background: none; border: none; text-align: center; font-family: 'Montserrat'; font-weight: 800;">
+                <mat-icon class="box bounce-7" style="font-size: 25px;  color:crimson;">delete_forever</mat-icon>
+                <br>Delete Row
+              </button>
+              <button (click)="showContentsPreview($event)" #contentsPreview
+                style="padding: .5%; height: 100px;background: none; border: none; text-align: center; font-family: 'Montserrat'; font-weight: 800;">
+                <mat-icon class="box bounce-7" style="font-size: 25px; color:midnightblue;">receipt</mat-icon>
+                <br>Preview
+              </button>
+              <button #Save (click)="saveXLSX()"
+                style="padding: .5%; height: 100px;background: none; border: none; text-align: center; font-family: 'Montserrat'; font-weight: 800;"
+                [disabled]="saveDisabled">
+                <mat-icon class="box bounce-7" style="font-size: 25px;  color:green;">cloud_upload</mat-icon><br>Save
+              </button>
+              <div *ngIf="isSaved" class="elementToFadeInAndOut">
+
+                <mat-icon style="color:limegreen; font-size: 14px; text-align: right;">check_circle_outline</mat-icon>
+
+                <div style="display: inline; font-size: 12px;">Saved</div>
+
+              </div>
+
+              <div style="float: right; margin-right: 1%; font-size: .8vw; font-family: 'Roboto', sans-serif;"><strong
+                  style="color:midnightblue;">Total Items:</strong> {{contentsTotalItems}}</div>
+              <div style="float: right; margin-right: 1%; font-size: .8vw; font-family: 'Roboto', sans-serif;"><strong
+                  style="color:midnightblue;">Total Claimed:</strong> {{totalClaimAmount | currency}} </div>
+
+              <!-- Print button discontinued -->
+              <!-- <button mat-raised-button #Print class="exportButton"(click)="printWindow()" style="margin: 1%;">Print</button>   -->
+
+
+
+              <div class="tableFixHead">
+                <table #dataTable id="dataTable" class="contentsTable" style="width: 100%;">
+
+                  <thead>
+                    <tr>
+
+                      <th style="background: #5587a4; color: white;height:1.2vw;font-size:.5vw; ">Room</th>
+                      <th style="background: #5587a4;color: white;height:1.2vw;font-size:.5vw;">Qty</th>
+                      <th style="background: #5587a4;color: white;height:1.2vw;font-size:.5vw;">Unit Of Measure</th>
+                      <th style="background: #5587a4;color: white;height:1.2vw;font-size:.5vw;">Item Desc</th>
+                      <th style="background: #5587a4;color: white;height:1.2vw;font-size:.5vw;">Age Years</th>
+                      <th style="background: #5587a4;color: white;height:1.2vw;font-size:.5vw;">Comments</th>
+                      <th style="background: #5587a4;color: white;height:1.2vw;font-size:.5vw;">Make</th>
+                      <th style="background: #5587a4;color: white;height:1.2vw;font-size:.5vw;">Model</th>
+                      <th style="background: #5587a4;color: white;height:1.2vw;font-size:.5vw;">Serial #</th>
+                      <th style="background: #5587a4;color: white;height:1.2vw;font-size:.5vw;">Purchased From</th>
+                      <th style="background: #5587a4;color: white;height:1.2vw;font-size:.5vw;">Estimated Unit Cost</th>
+                      <!-- <th style="background: #fff; width: 50px;">Dep%</th> -->
+                      <th style="background: #5587a4;color: white;height:1.2vw;font-size:.5vw;">Total Cost</th>
+                    </tr>
+                  </thead>
+
+
+                  <tbody>
+                    <tr #deleteThisRow #tableRow *ngFor="let row of rows$ | async;" (change)="calcTotal()"
+                      (change)="autoSaveXLSX($event)">
+
+                      <td class="tdFields">
+                        <mat-form-field appearance="legacy" style="width:6vw;" class="matFields">
+
+                          <select matNativeControl #roomInput>
+                            <option selected>Personal Property</option>
+                            <option>Atrium</option>
+                            <option>Attic</option>
+                            <option>Bar Area</option>
+                            <option>Basement</option>
+                            <option>Bathroom</option>
+                            <option>Bedroom 1</option>
+                            <option>Bedroom 2</option>
+                            <option>Bedroom 3</option>
+                            <option>Bedroom 4</option>
+                            <option>Bedroom 5</option>
+                            <option>Bedroom 6</option>
+                            <option>Board Room</option>
+                            <option>Breakfast Nook</option>
+                            <option>Breezeway</option>
+                            <option>Carport</option>
+                            <option>Closet</option>
+                            <option>Conference Room</option>
+                            <option>Crawlspace</option>
+                            <option>Deck</option>
+                            <option>Den</option>
+                            <option>Detached Garage</option>
+                            <option>Dining Room</option>
+                            <option>Dressing Area</option>
+                            <option>Electrical</option>
+                            <option>Electrical Room</option>
+                            <option>Entry</option>
+                            <option>Equipment Room</option>
+                            <option>Exercise Room</option>
+                            <option>Exterior</option>
+                            <option>Exterior</option>
+                            <option>Family Room</option>
+                            <option>Fees</option>
+                            <option>Fencing</option>
+                            <option>Foyer</option>
+                            <option>Garage</option>
+                            <option>General</option>
+                            <option>Guest Room</option>
+                            <option>H.V.A.C</option>
+                            <option>Half Bathroom</option>
+                            <option>Hall</option>
+                            <option>Hall Closet</option>
+                            <option>Kitchen</option>
+                            <option>Lanai</option>
+                            <option>Library</option>
+                            <option>Living Room</option>
+                            <option>Lobby</option>
+                            <option>Loft</option>
+                            <option>Lunch Room</option>
+                            <option>Maid's Quarters</option>
+                            <option>Master Bathroom</option>
+                            <option>Master Bedroom</option>
+                            <option>Mechanical Room</option>
+                            <option>Media Room</option>
+                            <option>Men's Restroom</option>
+                            <option>Middle Bedroom</option>
+                            <option>Miscellaneous</option>
+                            <option>MIL Suite</option>
+                            <option>Mud Room</option>
+                            <option>Music Room</option>
+                            <option>Office</option>
+                            <option>Pantry</option>
+                            <option>Patio Enclosure</option>
+                            <option>Play Room</option>
+                            <option>Plumbing</option>
+                            <option>Pool Area</option>
+                            <option>Porch</option>
+                            <option>Sauna</option>
+                            <option>Screen Room</option>
+                            <option>Shed</option>
+                            <option>Shower Area</option>
+                            <option>Shower Stall</option>
+                            <option>Solarium</option>
+                            <option>Stairs</option>
+                            <option>Stairwell</option>
+                            <option>Storage Room</option>
+                            <option>Study</option>
+                            <option>Sun Room</option>
+                            <option>Utility Room</option>
+                            <option>Vanity Area</option>
+                            <option>Walk-in Closet</option>
+                            <option>Water Closet</option>
+                            <option>Women's Restroom</option>
+                            <option>Workout Room</option>
+                            <option>Workshop</option>
+
+                          </select>
+                        </mat-form-field>
+                      </td>
+
+                      <td class="tdFields">
+                        <mat-form-field appearance="legacy" style="width:2vw;" class="matFields">
+
+                          <input matInput type="number" #QTYInput value="0" style="text-align: center;" min="0"
+                            (click)="defaultMin($event)" (change)="defaultMin($event)">
+                        </mat-form-field>
+                        <!-- <input type="number" maxlength="10" #QTYInput value="0" style="width: 50px;text-align: center; min-height: 25px;height: 25px;" min="0"> -->
+                      </td>
+                      <td class="tdFields">
+                        <mat-form-field appearance="legacy" style="width:3vw;" class="matFields">
+
+                          <select matNativeControl #UOMInput>
+                            <option value="EA" id="UOM1" style=" text-align: center;">Each</option>
+                            <option value="PR" id="UOM2" style=" text-align: center;">Pair</option>
+                          </select>
+                        </mat-form-field>
+
+                        <!-- <select #UOMInput style="width: 50px; min-height: 25px;height: 25px;">
+                            <option selected>EA</option>
+                            <option>PR</option>
+                            </select> -->
+                      </td>
+                      <td class="tdFields">
+                        <mat-form-field appearance="legacy" style="width:6vw;" class="matFields">
+                          <textarea matInput maxlength="500" #itemInput rows="1"></textarea>
+                        </mat-form-field>
+                        <!-- <textarea maxlength="500" style="width: 150px; height: 25px; min-height: 25px; max-height: 250px;" #itemInput></textarea> -->
+                      </td>
+                      <td class="tdFields">
+                        <mat-form-field appearance="legacy" style="width:2vw;" class="matFields">
+
+                          <input matInput type="number" maxlength="10" value="0" #ageInput style=" text-align: center;"
+                            min="0" (click)="defaultMin($event)" (change)="defaultMin($event)">
+                        </mat-form-field>
+                        <!-- <input type="number" maxlength="10" value="0" #ageInput style="width: 50px; min-height: 25px; height: 25px; text-align: center;" min="0"> -->
+                      </td>
+
+                      <td class="tdFields">
+                        <mat-form-field appearance="legacy" style="width:6vw;" class="matFields">
+
+                          <textarea matInput maxlength="255" #commentsInput rows="1"></textarea>
+                        </mat-form-field>
+                        <!-- <textarea maxlength="255" #commentsInput style="width: 150px; min-height: 25px;height: 25px;  max-height: 250px;" ></textarea> -->
+                      </td>
+                      <td class="tdFields">
+                        <mat-form-field appearance="legacy" style="width:6vw;" class="matFields">
+
+                          <textarea matInput maxlength="30" #makeInput rows="1"></textarea>
+                        </mat-form-field>
+                        <!-- <textarea maxlength="30" #makeInput style="width: 150px; min-height: 25px;height: 25px;  max-height: 250px;" ></textarea> -->
+                      </td>
+                      <td class="tdFields">
+                        <mat-form-field appearance="legacy" style="width:6vw;" class="matFields">
+
+                          <textarea matInput maxlength="30" #modelInput rows="1"></textarea>
+                        </mat-form-field>
+                        <!-- <textarea maxlength="30" #modelInput style="width: 150px; min-height: 25px;height: 25px;  max-height: 250px;" ></textarea> -->
+                      </td>
+                      <td class="tdFields">
+                        <mat-form-field appearance="legacy" style="width:6vw;" class="matFields">
+
+                          <textarea matInput maxlength="20" #serialInput rows="1"></textarea>
+                        </mat-form-field>
+                        <!-- <textarea maxlength="20"#serialInput style="width: 150px; min-height: 25px;height: 25px;  max-height: 250px;" ></textarea> -->
+                      </td>
+                      <td class="tdFields">
+                        <mat-form-field appearance="legacy" style="width:6vw;" class="matFields">
+
+                          <textarea matInput maxlength="30" #fromInput rows="1"></textarea>
+                        </mat-form-field>
+                        <!-- <textarea maxlength="30" #fromInput style="width: 150px; min-height: 25px;height: 25px;  max-height: 250px;" ></textarea> -->
+                      </td>
+                      <td class="tdFields">
+                        <mat-form-field appearance="legacy" style="width:3vw;" class="matFields">
+
+                          <input matInput type="number" min="0.00" step="0.01" #costInput value="0.00"
+                            (click)="defaultMin($event)" (change)="defaultMin($event)">
+                        </mat-form-field>
+                        <!-- <input type="number" min="0.00" step="0.01" style="width: 75px; min-height: 25px;height: 25px;" #costInput value="0.00"> -->
+                      </td>
+                      <!-- Removed line for depreciation -->
+                      <!-- <td style="padding: 0;vertical-align: middle;">  <input readonly type="number" (click)="depAlert($event)" #depInput style="width: 50px; min-height: 25px;height: 25px; text-align: center;" min="0"></td>  -->
+                      <td class="tdFields">
+
+                        <mat-form-field appearance="legacy" class="matFields">
+
+                          <input matInput readonly type="number" min="0.00" step="0.01" style=" pointer-events: none;"
+                            class="inputFields" #totalInput>
+
+                        </mat-form-field>
+                        <!-- <input readonly type="number" min="0.00" step="0.01" style="width: 75px; min-height: 25px;height: 25px;" #totalInput disabled> -->
+                      </td>
+
+                    </tr>
+
+                  </tbody>
+                </table>
+              </div>
+
+
+
+            </div>
+            <div class="contentsPreviewContainer" id="elementToFadeIn" [hidden]="!contentsPreviewVisibility">
+              <mat-card class="contentsPreview">
+                <button mat-icon-button (click)="contentsPreviewClose()" style="float: right!important;">
+                  <mat-icon>backspace</mat-icon>
+                </button>
+                <div #contentsShowPrev [innerHTML]="finalContentsPrev | safeHtml" class="contentsPreviewContent"></div>
+
+              </mat-card>
+            </div>
+
+
+          </mat-card>
+          <!-- <button (click)="elementToContentsArray()">Next 20</button> -->
+          <div style="display: flex; justify-content: center; padding: 1.5%; padding-bottom: 2%;">
+            <button class="nextStepButton" (click)="nextTab()">Next Step</button>
+          </div>
+        </mat-tab>
+        <mat-tab #tab4 label="Review & Submit">
+          <br>
+          <div
+            style="background-color: #eaf0f2; padding-top: 20px; padding-bottom: 20px; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;">
+            <div style=" display: flex; justify-content: center;">
+
+
+
+
+
+              <mat-card style="width: 80%; ">
+                <div class="sectionHeader">Step 4: Review & Submit</div>
+                <br>
+
+                <div
+                  style=" color: slategray; font-weight: 200; text-align: center; font-family: 'Roboto';font-size: .8vw;">
+                  You've looked over your claim. Now, are you ready to submit everything? Check the box to confirm you
+                  have completed or reviewed the task.</div>
+
+                <div class="reviewContentContainer">
+                  <br>
+                  <mat-card class="reviewContent">
+                    <div class="reviewLeftBox">
+                      <div class="reviewHeaderText">
+                        CLAIM<br>DOCUMENTS
+                      </div>
+                    </div>
+                    <div class="reviewRightSideContent">
+
+                      <ul class="reviewMidText">
+                        <li style="text-decoration: underline; margin-left: 1vw;">
+                          <a href="https://www.fema.gov/sites/default/files/2020-05/FINAL_ClaimsHandbook_10252017.pdf"
+                            target="_blank">National Flood Insurance Program (NFIP) Claims Handbook</a>
+
+                        </li>
+
+                        <li style="text-decoration: underline; margin-left: 1vw;">
+                          <a href="https://www.fema.gov/sites/default/files/2020-05/F-123_GeneralProperty_SFIP_102015.pdf"
+                            target="_blank">National Flood Insurance Program (NFIP) General Property</a>
+                        </li>
+                      </ul>
+
+                      <mat-checkbox class="reviewCheckbox" id="reviewCheckbox" (change)="allChecked($event)" value="0">
+                        Completed:
+                      </mat-checkbox>
+
+                    </div>
+
+                  </mat-card>
+                  <mat-card class="reviewContent">
+                    <div class="reviewLeftBox">
+                      <div class="reviewHeaderText">
+                        INSPECTION<br>SCHEUDLED
+                      </div>
+                    </div>
+                    <div class="reviewRightSideContent">
+                      <div class="reviewMidText">
+                        <div style="color: darkgrey;">I have scheduled my <a
+                            style="text-decoration: underline; cursor: pointer;" (click)="activeTab = 1">virtual</a> or
+                          physical inspection.</div>
+                      </div>
+                      <mat-checkbox class="reviewCheckbox" (change)="allChecked($event)" value="1">
+                        Completed:
+                      </mat-checkbox>
+                    </div>
+                  </mat-card>
+                  <mat-card class="reviewContent">
+                    <div class="reviewLeftBox">
+                      <div class="reviewHeaderText">
+                        PERSONAL<br>PROPERTY
+                      </div>
+                    </div>
+                    <div class="reviewRightSideContent">
+                      <div class="reviewMidText">
+                        <div style="color: darkgrey;">I have completed my personal property entry.</div>
+
+                        <div (click)="showContentsPreview($event);" class="hoverLink"
+                          style="cursor: pointer; text-decoration: underline;">Review Personal Property Items</div>
+                      </div>
+                      <mat-checkbox class="reviewCheckbox" (change)="allChecked($event)" value="2">
+                        Completed:
+                      </mat-checkbox>
+                    </div>
+                  </mat-card>
+                  <mat-card class="reviewContent">
+                    <div class="reviewLeftBox">
+                      <div class="reviewHeaderText">
+                        CLAIM<br>REVIEW
+                      </div>
+                    </div>
+                    <div class="reviewRightSideContent">
+                      <div class="reviewMidText">
+                        <div style="color: darkgrey;">I have reviewed all documents and I affirm that all<br>items
+                          submitted are accurate & filled to the best of my ability.</div>
+
+
+                      </div>
+                      <mat-checkbox class="reviewCheckbox" (change)="allChecked($event)" value="3">
+                        Completed:
+                      </mat-checkbox>
+                    </div>
+                  </mat-card>
+
+                </div>
+
+
+
+                <!-- <div style=" color: crimson; font-weight: 800; text-align: center; font-family: 'Montserrat';font-size: 12px; padding: 1%; margin-top: 1%; font-variant: small-caps;">the following fields are required to submit your claim</div>
+                              <div style="display: flex; justify-content: center; font-size: 14px; padding: 1%; margin-top: 0; margin-bottom: 5%;">
+                                
+                                <section>
+                                  
+                                  <mat-checkbox  (change)="allChecked($event)" value="0" style="display: block; font-family: 'Montserrat'; font-weight: 800; text-align: justify; padding: 1%; margin-left: 120px;">Have you read over your {{adjDataArray[0][0].policyType}} Policy <br> and the National Flood Insurance Handbook?
+                                  
+                                      
+                                        
+                                       
+                                   
+                                  </mat-checkbox>
+                                  <div style="display: flex; justify-content: center; padding-bottom: 25px;" >
+                                    <a href='https://www.fema.gov/sites/default/files/2020-05/F-123_GeneralProperty_SFIP_102015.pdf' a target="_blank" style="padding: 1%;" class="underLine"><img src="../insured/assets/genProp.png"  style="height: 125px;padding: 1%; border: 1px solid steelblue; background: white;"></a>
+                                    <a href='https://www.fema.gov/sites/default/files/2020-05/FINAL_ClaimsHandbook_10252017.pdf' a target="_blank" style="padding: 1%;"  class="underLine"><img src="../insured/assets/handbook.png" style="height: 125px; padding: 1%;"></a>
+                                  </div>
+                                  <mat-checkbox   (change)="allChecked($event)" value="1" style="display: block; font-family: 'Montserrat'; font-weight: 800; text-align: justify; padding: 1%; margin-left: 120px;">Have you communicated with your Adjuster<br> and completed a remote inspection (if requested)?</mat-checkbox>
+                                  <mat-checkbox (change)="allChecked($event)" value="2" style="display: block; font-family: 'Montserrat'; font-weight: 800; text-align: justify; padding: 1%; margin-left: 120px;">Do you certify that you have reviewed your Contents Damages<br>and are submitting them for Adjuster review?</mat-checkbox>                                
+                                  <button (click)="showContentsPreview($event)" #contentsPreview style="padding: .5%; height: 100px;background: none; border: none; text-align: center; margin: 0 auto; display: block; font-family: 'Montserrat'; font-weight: 800;"><mat-icon class="hover" style="font-size: 75px; margin-left: -55px; color:midnightblue;">receipt</mat-icon><br>Contents Preview</button>
+
+                                 
+                                </section>
+                                
+                              
+                          </div> -->
+
+
+              </mat-card>
+            </div>
+
+
+            <div class="contentsPreviewContainer" id="elementToFadeIn" [hidden]="!contentsPreviewVisibility">
+              <mat-card class="contentsPreview">
+                <button mat-icon-button (click)="contentsPreviewClose()" style="float: right!important;">
+                  <mat-icon>backspace</mat-icon>
+                </button>
+                <div #contentsShowPrev [innerHTML]="finalContentsPrev | safeHtml" class="contentsPreviewContent"></div>
+
+              </mat-card>
+            </div>
+            <div #contentsPrev id="contentsPrev" [innerHTML]="contentsPreviewTable | safeHtml" [hidden]="true"
+              class="contentsPreviewContent"></div>
+
+
+            <div style="display: flex; justify-content: center; padding: 1.5%; padding-bottom: 2%;">
+              <button class="subButton" mat-stroked-button type="submit" (click)="finalSubmission()" value="Send"
+                [disabled]="!allCheckedTrue">Submit</button>
+            </div>
+
+
+          </div>
+
+
+
+
+        </mat-tab>
+
+      </mat-tab-group>
+    </mat-card>
+
+
+  </div>
+  <div class="cpLogo">
+
+    <svg style=" float: left; margin-bottom: 3%;" xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink" width="4vw" height="4vw" viewBox="0 0 90 90">
+      <image id="_2" data-name="2" width="90" height="90"
+        xlink:href="data:image/png;base64,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ICAgPHJkZjpTZXE+CiAgICA8cmRmOmxpIHJkZjpwYXJzZVR5cGU9J1Jlc291cmNlJz4KICAgICA8QXR0cmliOkNyZWF0ZWQ+MjAyMS0wMS0yMDwvQXR0cmliOkNyZWF0ZWQ+CiAgICAgPEF0dHJpYjpFeHRJZD43YzE0Y2JmNy05ZjkyLTQzYjktYmRjOS00N2RiYzkzODM1NWU8L0F0dHJpYjpFeHRJZD4KICAgICA8QXR0cmliOkZiSWQ+NTI1MjY1OTE0MTc5NTgwPC9BdHRyaWI6RmJJZD4KICAgICA8QXR0cmliOlRvdWNoVHlwZT4yPC9BdHRyaWI6VG91Y2hUeXBlPgogICAgPC9yZGY6bGk+CiAgIDwvcmRmOlNlcT4KICA8L0F0dHJpYjpBZHM+CiA8L3JkZjpEZXNjcmlwdGlvbj4KCiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0nJwogIHhtbG5zOmRjPSdodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyc+CiAgPGRjOnRpdGxlPgogICA8cmRmOkFsdD4KICAgIDxyZGY6bGkgeG1sOmxhbmc9J3gtZGVmYXVsdCc+U2VsZWN0IEZpbGUgdG8gVXBsb2FkPC9yZGY6bGk+CiAgIDwvcmRmOkFsdD4KICA8L2RjOnRpdGxlPgogPC9yZGY6RGVzY3JpcHRpb24+CgogPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9JycKICB4bWxuczpwZGY9J2h0dHA6Ly9ucy5hZG9iZS5jb20vcGRmLzEuMy8nPgogIDxwZGY6QXV0aG9yPkNoZWxzZWEgQmFsZGVyc29uPC9wZGY6QXV0aG9yPgogPC9yZGY6RGVzY3JpcHRpb24+CgogPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9JycKICB4bWxuczp4bXA9J2h0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8nPgogIDx4bXA6Q3JlYXRvclRvb2w+Q2FudmE8L3htcDpDcmVhdG9yVG9vbD4KIDwvcmRmOkRlc2NyaXB0aW9uPgo8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSdyJz8+n1n47gAAAABJRU5ErkJggg==" />
+    </svg>
+  </div>
+
+
+</div>
