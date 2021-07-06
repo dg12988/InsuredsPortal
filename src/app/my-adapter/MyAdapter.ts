@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs';
 import { delay } from "rxjs/operators";
 
 
-
+// Chat system || Incomplete - Alpha Phase
 export class DemoAdapter extends ChatAdapter implements IChatGroupAdapter {
   
   public static mockedParticipants: IChatParticipant[] = [
