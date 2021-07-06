@@ -1,12 +1,15 @@
+<!-- Component is designed to allow for authentication through server side valadation. This authentication section has been removed for security, and it's been replaced with a hardcoded version. -->
 
 
+<!-- Displays main content/component if the authentication is passed -->
 <div style=" width: 100%; position: relative;" [@fadeInOut]>
 <mat-card *ngIf="!authPassed" style="width:500px; background-color: #f7f7f7; position: fixed;top: 50%; left: 50%; transform: translate(-50%, -50%)">
     <div style="padding: 1%; padding-top: 10%;">
       <img src="../insured/assets/Claimswire_Logo1.png" alt="Insured Connect" width="346px" height="48px" style="margin: 0 auto; display: block;">
       <div style="color:darkslategrey;  text-align: center; font-family: 'Roboto';font-size: 22px; font-weight: 400; margin-bottom: 5%; margin-top: 1%;">Insured Connect | Claims Portal</div>
     </div>
-    
+        
+    <!--   Start Login Form   -->
     <div class="loginForm" style="display: block; margin: 2%;">
        
         <mat-form-field style="margin: 0 auto; display: block; width: 350px;">
@@ -46,4 +49,5 @@
 </mat-card>
 </div>
 
+<!-- Loads URI Parameter entered, this allows for the cookie system to automatically log the user in if they've selected Remember Me -->
 <adjmap-app *ngIf="authPassed" [childParam]="parentParam" [@fadeInOut]></adjmap-app> 
