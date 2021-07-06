@@ -1,6 +1,8 @@
+<!-- Logs user out after X amount of time -->
 <div id="overall" (mousemove)="idleTimeout($event)">
   <app-login *ngIf="logOutRequested" [@fadeInOut]></app-login>
 
+<!--  Chat Implementation  -->
   <ng-chat #ngChatInstance [adapter]="adapter" [userId]="userId" [hideFriendsList]="true" (change)="messagesRead()"
     (click)="messagesRead()"></ng-chat>
   <div style="margin-left: 10.25%; margin-bottom: -15px; padding-top: .5%;">
@@ -17,8 +19,7 @@
   </div>
 
 
-
-
+<!-- Lazy Loading Splash Screen with indeterminate loading animation -->
   <div class="contentsPreviewContainer" *ngIf="isLoading" [@fadeInOut]>
 
     <mat-card class="spinnerContainer" #spinner>
@@ -38,9 +39,7 @@
     </mat-card>
   </div>
 
-
-
-
+<!-- Possible Future Usage -->
   <!-- <div class="subNav" *ngIf="!logOutRequested">
     <div class="input" style="padding-bottom: .5%;">
       <button mat-stroked-button type="submit" class ="loginButton"  value="Logout" style="width:175px; height:35px; font-family: 'Montserrat';font-size: 15px; display: block; color: midnightblue;" (click)="logOut()">LOGOUT</button>
@@ -49,6 +48,7 @@
   
 </div>  -->
 
+<!--  Main Tab Group  -->
   <div class="wrapper" *ngIf="!logOutRequested" [@fadeInOut]>
     <div class="mainTabsWrapper"
       style="background-color: #236188; width: 99%; margin-left: .5%;padding-bottom: .2%; margin-top: .5%;display: flex;">
@@ -67,7 +67,7 @@
     </div>
     <mat-card id="contentWrap" style="overflow-x:auto; background-color: #eaf0f2;">
 
-
+      <!-- Main Section -->
       <div *ngIf="isDashOpen" [@fadeInOut]>
         <div
           style="background-color: #eaf0f2; padding-top: 20px;padding-bottom: 20px; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;">
@@ -270,6 +270,7 @@
         </div>
       </div>
 
+      <!--   Messages System     -->
       <div *ngIf="isMessageOpen" [@fadeInOut]>
         <div
           style="background-color: #eaf0f2; padding-top: 20px;padding-bottom: 20px; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;">
@@ -367,6 +368,7 @@
         </div>
       </div>
 
+      <!--   Open Claim Wizard   -->
       <mat-tab-group *ngIf="isWizardOpen" class="tabGroup" mat-align-tabs="center" [(selectedIndex)]="activeTab"
         [@fadeInOut]>
 
@@ -478,7 +480,7 @@
           </div>
         </mat-tab>
 
-
+        <!--     Start Personal Property/Contents Entry Sheet     -->
         <mat-tab #tab1 label="Personal Property Entry">
           <br>
           <mat-card style="width: 98%; margin-left: 1%;">
@@ -768,9 +770,6 @@
                   </tbody>
                 </table>
               </div>
-
-
-
             </div>
             <div class="contentsPreviewContainer" id="elementToFadeIn" [hidden]="!contentsPreviewVisibility">
               <mat-card class="contentsPreview">
@@ -778,7 +777,6 @@
                   <mat-icon>backspace</mat-icon>
                 </button>
                 <div #contentsShowPrev [innerHTML]="finalContentsPrev | safeHtml" class="contentsPreviewContent"></div>
-
               </mat-card>
             </div>
 
@@ -789,15 +787,13 @@
             <button class="nextStepButton" (click)="nextTab()">Next Step</button>
           </div>
         </mat-tab>
+        
+        <!--     Final Review Section     -->
         <mat-tab #tab4 label="Review & Submit">
           <br>
           <div
             style="background-color: #eaf0f2; padding-top: 20px; padding-bottom: 20px; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;">
             <div style=" display: flex; justify-content: center;">
-
-
-
-
 
               <mat-card style="width: 80%; ">
                 <div class="sectionHeader">Step 4: Review & Submit</div>
