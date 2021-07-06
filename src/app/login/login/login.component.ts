@@ -20,6 +20,7 @@ import {style, state, animate, transition, trigger} from '@angular/animations';
       ])
     ])
   ],
+//   Using OnPush for performance
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./login.component.css']
 })
