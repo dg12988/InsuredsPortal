@@ -39,9 +39,10 @@ import { DemoAdapter } from '../my-adapter/MyAdapter';
 
 
 
+// Contstants Declaration redacted for portfolio
 
 const API_KEY: string = 'REDACTED';
-//const CW_URL: string = 'http://192.168.2.122:3000/claims/';
+//const CW_URL: string = 'http://REDACTED:3000/claims/';
 const VI_SOURCE_URL = 'https://api.REDACTED.net/api/getVirtualInspection/';
 const CW_URL: string = 'http://REDACTED:3000/assignment';
 const CW_PUT_URL: string = 'https://REDACTED.simsol.com/ws-portal/contents';
@@ -84,7 +85,8 @@ export class AdjMapComponent implements OnInit {
   count$: Observable<number>;
   rows$: Observable<any[]>;
 
-  // input arrays for JSON data  
+  // Variable Declaration
+  
   public contentsBaseRows = 0;
   public overallTotalItems = 1;
   public contentsDataArray: any[];
@@ -144,6 +146,8 @@ export class AdjMapComponent implements OnInit {
 
   @Input('childParam') childParam: string;
   
+  // ViewChild/Children Declaration   
+  
   @ViewChild ('VirtualInspectionIframe') VirtualInspectionIframe;
   @ViewChild ('dataTable') dataTable;
   @ViewChild ('addRowAmount') addRowTotal;
@@ -176,27 +180,22 @@ export class AdjMapComponent implements OnInit {
         success: (stream: any) => void, 
         error?: (error: string) => void
         ) : void;
-}
+    }
 
    
   }
-
-
   
+//  Used for automatic and manual Logout
   logOut(){
 
- 
-      
-      this.cookieService.delete('password');
- 
-
-    this.logOutRequested = true;
+   this.cookieService.delete('password');
+   this.logOutRequested = true;
       window.location.reload();
 
 
   }
   
- 
+//  Calculates Total of Personal Property
   calcTotal(){
     this.totalClaimAmount = 0;
   // for(let x = 0; x < this.mainContentsDataArray[0].length; x++){
@@ -230,16 +229,13 @@ export class AdjMapComponent implements OnInit {
     getContentsInfo(){
       let adjParam = this.getParamValueQueryString("id");
       this.httpClient.get(CONTENTS_URL_PART1 + "/" + adjParam + "/" + CONTENTS_URL_PART2, { responseType: 'blob'}).subscribe((res: File)=>{
-       
-      
+            
          this.loadXLSX(res);  
-
-    
-          
+       
       });
     }
 
-  //gets parameter name
+  //gets parameter name for URL
   getParamValueQueryString( paramName ) {
     const url = window.location.href;
     let paramValue;
@@ -253,11 +249,13 @@ export class AdjMapComponent implements OnInit {
   goToLink(url: string){
     window.open(url, "_blank");
   }
+  
+//   Gets PhotoID Virual Inspection link so that users can complete a virtual inspection
   getVirtualInspection(){
 
-    let VIemail = "doug.goldberg@me.com";
-    let VIapi = "-MB61TCyRL8FCIk2367K"
-    let VIid = "-MI16jfscFM0DeT9kkML"
+    let VIemail = "REDACTED";
+    let VIapi = "REDACTED"
+    let VIid = "REDACTED"
 
     let VIbody = { 
         "email":  VIemail,
@@ -265,7 +263,7 @@ export class AdjMapComponent implements OnInit {
         "assignmentId": VIid
       }
           
-   
+//    Open server connection
     this.httpClient.post(VI_SOURCE_URL, VIbody).subscribe((res: Adjuster[])=>{
     this.VIinfoArray = res;
     console.log(res);
@@ -276,7 +274,7 @@ export class AdjMapComponent implements OnInit {
   }
 
 
-
+// Initialize Data and fill via server get information
   ngOnInit() {
     // this.isLoading = true;
   
@@ -307,24 +305,15 @@ export class AdjMapComponent implements OnInit {
     this.contentsBgColor ="#fafaf9";
   }
 
-   
-   
-    
     this.contentsTotalItems = 1;
-
-    
-   
-     
   }
 
-ngDoCheck(){
-  // this.totalUnreadMessages = DemoAdapter.mockedParticipants[0].totalUnreadMessages;
-}
-ngAfterContentInit(){
+
+//   Set loading to false after the content has initialized.
+  ngAfterContentInit(){
   setTimeout(() => {
     this.isLoading = false;
 
-    console.log(this.ngChatInstance);
     this.ngChatInstance.triggerOpenChatWindow(DemoAdapter.mockedParticipants[0]);
     // this.totalUnreadMessages = DemoAdapter.mockedParticipants[0].totalUnreadMessages;
   }, 300);
@@ -333,7 +322,7 @@ ngAfterContentInit(){
    
   
 }
-  
+// Currently unused due to link to PhotoID app  
   async startRecording() {
     navigator.getUserMedia(
     {video: true, audio: true}, 
@@ -343,7 +332,7 @@ ngAfterContentInit(){
 
   }
 
- 
+ // Currently unused due to link to PhotoID app  
  async stopBothVideoAndAudio(stream) {
   stream.getTracks().forEach(function(track) {
       if (track.readyState == 'live') {
@@ -352,16 +341,15 @@ ngAfterContentInit(){
   });
 }      
 
-
+// moves tab to the next
  nextTab(){
 
    this.activeTab++;
  }
 
- 
+//  Shows Claim Wizard, hides other components
   showWizard(){
-  
-  
+   
     if(this.isWizardOpen === false){
       this.isWizardOpen = true;
       this.isDashOpen = false;
@@ -374,7 +362,7 @@ ngAfterContentInit(){
     
   
   }
-  
+  //  Shows Dash, hides other components
   showDash(){
     if(this.isDashOpen === false){
       this.isWizardOpen = false;
@@ -388,6 +376,7 @@ ngAfterContentInit(){
     }
 
   }
+  //  Shows Message Box popup
   showMessage(){
       this.isWizardOpen = false;
       // this.isDashOpen = false;
@@ -398,7 +387,8 @@ ngAfterContentInit(){
      
       this.showClaimsProcess = true;
   }
-
+  
+// Timeout after 9 Minutes without any movement
   idleTimeout(event){
     if(event.type ==="mousemove"){
       clearTimeout(this.idleTimeoutClear);
@@ -408,6 +398,7 @@ ngAfterContentInit(){
    this.idleTimeoutClear = setTimeout(() => { this.saveAndReload(); },900000);
   }
   
+//   Feature that saves and loads XLSX file created by Personal Property worksheet. The data is sent to and from server.
   saveAndReload(){
     this.exportXLSX();
     setTimeout(() => { this.logOut();}, 3000);
