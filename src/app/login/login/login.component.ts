@@ -1,3 +1,5 @@
+<!-- Component is designed to allow for authentication through server side valadation. This authentication section has been removed for security, and it's been replaced with a hardcoded version. -->
+
 import { Component, OnInit } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service'; 
 import {ViewChild, ViewChildren} from '@angular/core';
@@ -23,6 +25,7 @@ import {style, state, animate, transition, trigger} from '@angular/animations';
 })
 export class LoginComponent implements OnInit {
 
+//   Variable Declaration
   username:string;
   password:string;
   private cookieName: string;
@@ -33,17 +36,21 @@ export class LoginComponent implements OnInit {
 
   @ViewChild ('userNameField') userNameField;
 
+//   Hardcoded Param for Portfolio
   parentParam="5511967";
 
   constructor(private cookieService: CookieService) {}
 
   ngOnInit(): void {
   
+//     Start cookie service to allow user to say logged in on reload
     this.stayLoggedIn();
 
     
   }
 
+  
+//   Adds cookies for Remember me and sets username and password in another cookie. Deletes cookie if remember me is not selected
   LoginUser(){
        
     if(this.userNameField.nativeElement.value.toUpperCase() == "ADMIN" && this.password == "admin1234"){
