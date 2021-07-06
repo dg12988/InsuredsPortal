@@ -40,7 +40,7 @@ import { DemoAdapter } from '../my-adapter/MyAdapter';
 
 
 
-const API_KEY: string = 'AIzaSyBp24pbzxjI2Lvz0SADUvR1dcfZoPZTHIQ';
+const API_KEY: string = [REDACTED];
 //const CW_URL: string = 'http://192.168.2.122:3000/claims/';
 const VI_SOURCE_URL = 'https://api.photoidapp.net/api/getVirtualInspection/';
 const CW_URL: string = 'http://localhost:3000/assignment';
