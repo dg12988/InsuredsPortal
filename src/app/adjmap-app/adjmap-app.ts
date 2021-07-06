@@ -40,19 +40,19 @@ import { DemoAdapter } from '../my-adapter/MyAdapter';
 
 
 
-const API_KEY: string = [REDACTED];
+const API_KEY: string = 'REDACTED';
 //const CW_URL: string = 'http://192.168.2.122:3000/claims/';
-const VI_SOURCE_URL = 'https://api.photoidapp.net/api/getVirtualInspection/';
-const CW_URL: string = 'http://localhost:3000/assignment';
-const CW_PUT_URL: string = 'https://claimswire-dev.simsol.com/ws-portal/contents';
-const ADJ_URL: string = 'https://claimswire-dev.simsol.com/ws-portal/insured/';
-const CONTENTS_URL_PART1: string = 'https://claimswire-dev.simsol.com/ws-portal/insured';
+const VI_SOURCE_URL = 'https://api.REDACTED.net/api/getVirtualInspection/';
+const CW_URL: string = 'http://REDACTED:3000/assignment';
+const CW_PUT_URL: string = 'https://REDACTED.simsol.com/ws-portal/contents';
+const ADJ_URL: string = 'https://REDACTED.simsol.com/ws-portal/insured/';
+const CONTENTS_URL_PART1: string = 'https://REDACTED.simsol.com/ws-portal/insured';
 const CONTENTS_URL_PART2: string = 'contents';
 //const ADJ_URL: string = 'http://localhost:4000/adjusters';
 const GOOGLE_URL: string = "https://maps.googleapis.com/maps/api/geocode/json?address=";
 const DIRECTIONS_URL: string="https://maps.googleapis.com/maps/api/directions/json?";
 const GOOGLE_DIRECTIONS_URL: string ="https://www.google.com/maps/dir/?api=1&origin=";
-const ROOMS_URL: string="http://localhost:2000/areas";
+const ROOMS_URL: string="http://REDACTED:2000/areas";
 
 const isIEOrEdge = /msie\s|trident\/|edge\//i.test(window.navigator.userAgent);
 
